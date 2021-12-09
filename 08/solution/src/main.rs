@@ -38,7 +38,7 @@ fn main() {
 
     let mut easy_digit_count = 0;
     let mut part_2_output_sum = 0;
-    let input_lines = input_reader::read_lines_into_vecs::<String>("input.txt", ' ');
+    let input_lines = input_reader::read_lines_into_vecs::<String>("input.txt", Some(' '));
     for line_vec in input_lines {
         let mut input = line_vec.split(|x| x.as_bytes()[0] == b'|');
         let signal_patterns : Vec<String> = input.next().unwrap().to_vec();

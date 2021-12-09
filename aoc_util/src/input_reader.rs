@@ -3,7 +3,7 @@ use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 use std::fmt;
 
-pub fn read_line_into_vec<T>(path: &str, delimeter : char) -> Vec<T> 
+pub fn read_line_into_vec<T>(path: &str, delimeter : Option<char>) -> Vec<T> 
 where 
     T: FromStr,
     <T as FromStr>::Err: fmt::Debug,
@@ -14,7 +14,7 @@ where
     line_into_vec(buf, delimeter)
 }
 
-pub fn read_lines_into_vecs<T>(path: &str, delimeter : char) -> impl Iterator<Item = Vec<T>>
+pub fn read_lines_into_vecs<T>(path: &str, delimeter : Option<char>) -> impl Iterator<Item = Vec<T>>
 where 
     T: FromStr,
     <T as FromStr>::Err: fmt::Debug,
@@ -32,11 +32,16 @@ fn file_bufreader(path: &str) -> BufReader<File> {
     BufReader::new(File::open(path).expect("cannot open file"))
 }
 
-fn line_into_vec<T>(buf: String, delimeter : char) -> Vec<T>
+fn line_into_vec<T>(buf: String, delimeter : Option<char>) -> Vec<T>
 where 
     T: FromStr,
     <T as FromStr>::Err: fmt::Debug,
 {
-    buf.split(delimeter).map(|x| x.parse::<T>().unwrap()).collect()
+    if delimeter.is_some() {
+        buf.split(delimeter.unwrap()).map(|x| x.parse::<T>().unwrap()).collect()
+    }
+    else {
+        buf.chars().map(|x| x.to_string().parse::<T>().unwrap()).collect()
+    }
 }
 

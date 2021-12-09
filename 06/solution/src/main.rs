@@ -40,7 +40,7 @@ impl LanternFish {
 
 fn main() {
     const SIM_DAYS: u32 = 80;
-    let initial_fish_state = input_reader::read_line_into_vec::<u32>("input.txt", ',');
+    let initial_fish_state = input_reader::read_line_into_vec::<u32>("input.txt", Some(','));
     let mut fish_state = Vec::new();
     for f in initial_fish_state {
         fish_state.push(LanternFish::new_with_days(f));
