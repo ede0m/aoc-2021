@@ -11,7 +11,16 @@ where
     let mut br = file_bufreader(path);
     let mut buf = String::new();
     br.read_line(&mut buf).expect("read line to vec failed");
-    buf.split(delimeter).map(|x| x.parse::<T>().unwrap()).collect()
+    line_into_vec(buf, delimeter)
+}
+
+pub fn read_lines_into_vecs<T>(path: &str, delimeter : char) -> impl Iterator<Item = Vec<T>>
+where 
+    T: FromStr,
+    <T as FromStr>::Err: fmt::Debug,
+{
+    let lines = read_by_lines(path);
+    lines.map(move |l| line_into_vec(l, delimeter))
 }
 
 pub fn read_by_lines(path: &str) -> impl Iterator<Item = String>{
@@ -21,5 +30,13 @@ pub fn read_by_lines(path: &str) -> impl Iterator<Item = String>{
 
 fn file_bufreader(path: &str) -> BufReader<File> {
     BufReader::new(File::open(path).expect("cannot open file"))
+}
+
+fn line_into_vec<T>(buf: String, delimeter : char) -> Vec<T>
+where 
+    T: FromStr,
+    <T as FromStr>::Err: fmt::Debug,
+{
+    buf.split(delimeter).map(|x| x.parse::<T>().unwrap()).collect()
 }
 
