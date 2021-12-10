@@ -1,6 +1,8 @@
 use aoc_util::input_reader;
 use std::collections::HashSet;
 
+// Something like floodmapping??
+
 #[derive(Debug)]
 struct Map {
     heights: Vec<Vec<u32>>, // row, col
@@ -89,7 +91,8 @@ impl Map {
     }    
     
     // we take a start spot and return any low spots found from searching from this start spot.
-    // this can return multiple spots because we can't gaurantee that there will be a tie for min adjacent spot
+    // this can return multiple spots because I wasn't sure how to handle ties between equal but min adjacent spots..
+    // so I branch to both and search both paths
     fn find_low_spots_from_start_spot(&self, start_spot : Spot, searched : &mut HashSet<String>) -> Vec<Option<Spot>> {
         
         // if we have search on this path, we will end up at the same low spot..
