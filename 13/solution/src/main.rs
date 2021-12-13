@@ -10,6 +10,7 @@ struct Point {
     y: u32,
 }
 
+#[derive(Debug)]
 struct Fold {
     dir: FoldDirection,
     index: u32
@@ -47,22 +48,27 @@ fn main() {
     let points : Vec<Point> = input_lines.iter().filter(|l| !l.starts_with("fold") && !l.is_empty()).map(|l| Point::new(&l)).collect();
 
     let mut grid = build_grid(points);
-    let first_fold = &folds[0];
+    // println!("\n");
+    // for l in &grid {println!("{:?}", l);}
+    // println!("\n");
 
-    let grid = fold_x(first_fold.index, grid);
-
-    // for f in folds {
-    //     grid = match f.dir {
-    //         FoldDirection::X => fold_x(f.index, grid),
-    //         _ =>  {
-    //             println!("{:?} not supported yet..", f.dir);
-    //             grid
-    //         }
-    //     };
-    // }
-    let flat = grid.iter().flatten();
-    let count = flat.filter(|c| **c == '#').count();
-    println!("dot count: {}", count);
+    for f in folds {
+        //println!("\nfold: {:?}", f);
+        grid = match f.dir {
+            FoldDirection::X => fold_x(f.index, grid),
+            FoldDirection::Y => fold_y(f.index, grid),
+            _ => grid,
+        };
+        // println!("\n");
+        // for l in &grid {println!("{:?}", l);}
+        // println!("\n");
+    }
+    println!("\n");
+    for mut l in grid {l.reverse(); println!("{:?}", l);}
+    println!("\n");
+    //let flat = grid.iter().flatten();
+    //let count = flat.filter(|c| **c == '#').count();
+    //println!("dot count: {}", count);
 }
 
 fn build_grid(points : Vec<Point>) -> Vec<Vec<char>> {
@@ -98,21 +104,29 @@ fn fold_x(at: u32, grid: Vec<Vec<char>>) -> Vec<Vec<char>> {
         }
         folded.push(new);
     }
-    // println!("\n");
-    // for l in &folded {println!("{:?}", l);}
-    // println!("\n");
     folded
 }
 
 fn fold_y(at: u32, grid: Vec<Vec<char>>) -> Vec<Vec<char>> {
     let (t, b) = grid.split_at(at as usize);
-    let (mut t, mut b) = (t.to_owned(), b.to_owned());
+    let (t, mut b) = (t.to_owned(), b.to_owned());
     b.remove(0); // fold at index row will be lost.
     b.reverse();  // fold the bottom half up
-    let max = std::cmp::max(t.len(), b.len()); // use the longest sub vec in case it wasn't folded in the middle..
-    for i in 0..max {
-        // todo: logic for the fold y overlap..
+    let  (start, other) : (Vec<Vec<char>>, Vec<Vec<char>>);
+    if t.len() > b.len() { start = t; other = b;} 
+    else {other = t; start = b;}
 
+    let mut folded = vec![];
+    for i in 0..start.len() {
+        let row = &start[i];
+        let can_check_folded = i >= (start.len() - other.len());
+        // todo: logic for the fold y overlap..
+        let mut new = vec![];
+        for col_idx in 0..row.len() {
+            if row[col_idx] == '#' || (can_check_folded && other[i][col_idx] == '#') { new.push('#')}
+            else { new.push('.')}
+        }
+        folded.push(new);
     }
-    vec![]
+    folded
 }
