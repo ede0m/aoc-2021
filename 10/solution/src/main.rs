@@ -36,7 +36,6 @@ fn validate_line(line: String) -> Option<char> {
         ('>', '<')
     ]);
     
-
     let mut stack = vec![];
     for c in line.chars() {
         if open_set.contains(&c) {
