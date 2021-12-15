@@ -59,9 +59,9 @@ fn main() {
             FoldDirection::Y => fold_y(f.index, grid),
             _ => grid,
         };
-        // println!("\n");
-        // for l in &grid {println!("{:?}", l);}
-        // println!("\n");
+        println!("\n");
+        for l in &grid {println!("{:?}", l);}
+        println!("\n");
     }
     println!("\n");
     for mut l in grid {l.reverse(); println!("{:?}", l);}
