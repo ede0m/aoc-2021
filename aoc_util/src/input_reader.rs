@@ -28,6 +28,13 @@ pub fn read_by_lines(path: &str) -> impl Iterator<Item = String>{
     br.lines().map(|l| l.unwrap()) 
 }
 
+pub fn read_into_string(path: &str) -> String {
+    let br = file_bufreader(path);
+    let mut s = String::new();
+    br.lines().for_each(|st| s.push_str(&st.unwrap()));
+    s
+}
+
 fn file_bufreader(path: &str) -> BufReader<File> {
     BufReader::new(File::open(path).expect("cannot open file"))
 }
